@@ -1,7 +1,7 @@
+from dateutil import parser
 import mysql.connector
 class fixed:
     def file1(self):
-        emp_no, f_name, l_name = "", "", ""
         f = open('rawdata.prn', 'r')
         line = f.readline()
         db = mysql.connector.connect(host="localhost", user="root", password="root", db="casestudy2",
@@ -24,21 +24,30 @@ class fixed:
                 obd,rid , rod, ea = self.OnBoadDate.strip(), self.Rollindate.strip(),self.Rolloffdate.strip(),self.Employeeaddress.strip()
                 ee ,ed , di,dn = self.Employeeemail.strip(),self.Employeedob.strip(),self.Deptid.strip(), self.DeptName.strip()
                 dd, pi,pn, pd,pl = self.Deptdesc.strip(),self.Projectid.strip(),self.ProjectName.strip(),self.ProjectDescription.strip(),self.Projectlocation.strip()
-                pd,ped,si,sd,sa,b = self.Projeffdate.strip(),self.Projenddate.strip(),self.salaryid.strip(), self.salarydate.strip(), self.salaryamt.strip(),self.Bonus.strip()
+                pefd,ped,si,sd,sa,b = self.Projeffdate.strip(),self.Projenddate.strip(),self.salaryid.strip(), self.salarydate.strip(), self.salaryamt.strip(),self.Bonus.strip()
                 di,dn,dd=self.Designationid.strip(), self.DesignationName.strip(), self.Designationdescription.strip()
-                EMPLOYEE = "insert into employee (Employeeid,EmpName,Gender,Empmobileno,OnBoadDate,Rollindate,Rolloffdate,Employeeaddress,Employeeemail,Employeedob,Deptid,Projectid,salaryid,salaryamt,Desinationid) values('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}',{},'{}');".format (ei,en,g,eno,obd,rid,rod,ea,ee,ed,di,pi,si,sa,di)
+                obddt = parser.parse(obd).date()
+                riddt = parser.parse(rid).date()
+                roddt = parser.parse(rod).date()
+                eddt = parser.parse(ed).date()
+                pefddt =parser.parse(pefd).date()
+                peddt = parser.parse(ped).date()
+                sddt =parser.parse(sd).date()
+
+                EMPLOYEE ="insert into employee (Employeeid,EmpName,Gender,Empmobileno,OnBoadDate,Rollindate,Rolloffdate,Employeeaddress,Employeeemail,Employeedob) values('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}');".format (ei,en,g,eno,obddt,riddt,roddt,ea,ee,eddt)
+                ACCENTUREEMPLOYEE = "insert into Accenture_employee (Employeeid,EmpName,Gender,Empmobileno,OnBoadDate,Rollindate,Rolloffdate,Employeeaddress,Employeeemail,Employeedob,Deptid,Projectid,salaryid,salaryamt,Desinationid) values('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}','{}',{},'{}');".format (ei,en,g,eno,obddt,riddt,roddt,ea,ee,eddt,di,pi,si,sa,di)
                 DEPT = 'insert into dept values( "{}","{}","{}");'.format(di,dn,dd)
-                PROJECT ='insert into project values( "{}","{}","{}","{}","{}","{}");'.format(pi,pn,pd,pl,pd,ped)
-                SALARY = 'insert into salary values( "{}","{}",{},{});'.format(si,sd,sa,b)
+                PROJECT ='insert into project values( "{}","{}","{}","{}","{}","{}");'.format(pi,pn,pd,pl,pefddt,peddt)
+                SALARY = 'insert into salary values( "{}","{}",{},{});'.format(si,sddt,sa,b)
                 DESIGNATION = 'insert into designation values("{}","{}","{}");'.format(di,dn,dd)
                 cursor.execute(EMPLOYEE)
                 cursor.execute(DEPT)
                 cursor.execute(PROJECT)
                 cursor.execute(SALARY)
                 cursor.execute(DESIGNATION)
-                db.commit()
+                cursor .execute(ACCENTUREEMPLOYEE)
+        db.commit()
         db.close()
-if __name__ == "__main__":
+'''if __name__ == "__main__":
     obj1 = fixed()
-    obj1.file1()
-
+    obj1.file1()'''
